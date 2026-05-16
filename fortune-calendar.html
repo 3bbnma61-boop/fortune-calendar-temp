@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ปฏิทินดวงชะตา 2569–2570</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    background: #0f0f1a;
+    color: #e0d8d0;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .header h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #f6d365, #fda085, #f6d365);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .header .sub {
+    color: #888;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    font-size: 0.85rem;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.05);
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  /* Calendar Grid */
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+  }
+
+  .month-card {
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    border-radius: 16px;
+    padding: 1.25rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .month-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .month-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 4px;
+  }
+  .month-card.good::before { background: linear-gradient(90deg, #43e97b, #38f9d7); }
+  .month-card.warn::before { background: linear-gradient(90deg, #f093fb, #f5576c); }
+  .month-card.mixed::before { background: linear-gradient(90deg, #f6d365, #fda085); }
+  .month-card.neutral::before { background: linear-gradient(90deg, #667eea, #764ba2); }
+
+  .month-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.75rem;
+  }
+  .month-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .month-year {
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+  }
+  .tag {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .tag.green { background: rgba(67,233,123,0.15); color: #43e97b; }
+  .tag.red { background: rgba(245,87,108,0.15); color: #f5576c; }
+  .tag.blue { background: rgba(102,126,234,0.15); color: #8899ff; }
+  .tag.pink { background: rgba(240,147,251,0.15); color: #f093fb; }
+  .tag.gold { background: rgba(246,211,101,0.15); color: #f6d365; }
+  .tag.teal { background: rgba(56,249,215,0.15); color: #38f9d7; }
+
+  .event {
+    font-size: 0.85rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    gap: 0.5rem;
+    line-height: 1.5;
+  }
+  .event:last-child { border-bottom: none; }
+  .event-icon { flex-shrink: 0; font-size: 1rem; }
+  .event-text { color: #c8c0b8; }
+
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    color: #555;
+    font-size: 0.8rem;
+  }
+
+  /* Best months highlight */
+  .best-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+  .best-badge.gold { background: rgba(246,211,101,0.2); color: #f6d365; }
+  .best-badge.red { background: rgba(245,87,108,0.2); color: #f5576c; }
+
+  /* Summary bar */
+  .summary-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .summary-stat {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .summary-stat .num {
+    font-size: 1.8rem;
+    font-weight: 900;
+  }
+  .summary-stat .label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.2rem;
+  }
+  .summary-stat.good .num { color: #43e97b; }
+  .summary-stat.warn .num { color: #f5576c; }
+  .summary-stat.love .num { color: #f093fb; }
+  .summary-stat.money .num { color: #f6d365; }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.6rem; }
+    .calendar { grid-template-columns: 1fr; }
+    .summary-bar { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>✦ ปฏิทินดวงชะตา ✦</h1>
+  <div class="sub">พ.ศ. 2569 — 2570 ・ พยากรณ์รายเดือนตามตำราซินแส</div>
+</div>
+
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot" style="background:#43e97b"></span> เดือนปัง</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#f5576c"></span> เดือนระวัง</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#f6d365"></span> ผสม/กลาง</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#667eea"></span> ปกติ</span>
+  <span class="legend-item">❤️ ความรัก</span>
+  <span class="legend-item">💰 หวย</span>
+  <span class="legend-item">🏥 สุขภาพ</span>
+</div>
+
+<div class="summary-bar">
+  <div class="summary-stat good">
+    <div class="num">5</div>
+    <div class="label">เดือนปัง ✨</div>
+  </div>
+  <div class="summary-stat warn">
+    <div class="num">5</div>
+    <div class="label">เดือนระวัง ⚠️</div>
+  </div>
+  <div class="summary-stat love">
+    <div class="num">2</div>
+    <div class="label">เดือนรัก ❤️</div>
+  </div>
+  <div class="summary-stat money">
+    <div class="num">4</div>
+    <div class="label">เดือนเสี่ยงโชค 💰</div>
+  </div>
+</div>
+
+<div class="calendar">
+
+  <!-- MAY 2569 -->
+  <div class="month-card neutral">
+    <div class="month-header">
+      <span class="month-title">พฤษภาคม 2569</span>
+      <span class="month-year">May 2026</span>
+    </div>
+    <div class="tags">
+      <span class="tag blue">ย้ายที่อยู่</span>
+      <span class="tag pink">รักใหม่ ✨</span>
+    </div>
+    <div class="event"><span class="event-icon">🏠</span><span class="event-text">อาจมีการย้ายที่อยู่ใหม่</span></div>
+    <div class="event"><span class="event-icon">🚧</span><span class="event-text">สร้างบ้าน/ต่อเติม อาจล่าช้ากว่าแผน</span></div>
+    <div class="event"><span class="event-icon">💖</span><span class="event-text">ช่วงเจอความรักหรือความสัมพันธ์ใหม่</span></div>
+  </div>
+
+  <!-- JUNE 2569 -->
+  <div class="month-card good">
+    <div class="month-header">
+      <span class="month-title">มิถุนายน 2569</span>
+      <span class="month-year">Jun 2026</span>
+    </div>
+    <div class="tags">
+      <span class="tag green">ปัง ✨</span>
+      <span class="tag pink">รักใหม่ ✨</span>
+    </div>
+    <div class="event"><span class="event-icon">🤝</span><span class="event-text">สร้างคอนเนคชั่นกับผู้ใหญ่ — อุปถัมภ์ดี</span></div>
+    <div class="event"><span class="event-icon">✈️</span><span class="event-text">เดินทางขยายประสบการณ์ — โอกาสใหม่</span></div>
+    <div class="event"><span class="event-icon">💖</span><span class="event-text">ความสัมพันธ์มั่นคง > ปริมาณ</span></div>
+    <div class="event"><span class="event-icon">💞</span><span class="event-text">ช่วงเจอความรักหรือความสัมพันธ์ใหม่</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">งานกับคนอื่นติดขัด — ห้ามให้ใครยืมเงิน/ค้ำประกัน</span></div>
+      <div class="event"><span class="event-icon">💰</span><span class="event-text">ห้ามให้กู้ยืม — เสี่ยงเสียเพื่อน</span></div>
+    </div>
+  </div>
+
+  <!-- JULY 2569 -->
+  <div class="month-card good">
+    <div class="month-header">
+      <span class="month-title">กรกฎาคม 2569</span>
+      <span class="month-year">Jul 2026</span>
+    </div>
+    <div class="tags">
+      <span class="tag green">ปัง ✨</span>
+    </div>
+    <div class="event"><span class="event-icon">🤲</span><span class="event-text">ช่วยเหลือคน — เสริมดวงแรง</span></div>
+    <div class="event"><span class="event-icon">🙏</span><span class="event-text">ทำบุญ ทำทาน — ผลชัดเจน</span></div>
+    <div class="event"><span class="event-icon">💫</span><span class="event-text">ใช้เสน่ห์สร้างสัมพันธ์ใหม่</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">ทำงานกับคนอื่น — สื่อสารให้ชัด อย่าให้เข้าใจผิด</span></div>
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">อย่าทำอะไรผิดกฎหมาย</span></div>
+      <div class="event"><span class="event-icon">🏥</span><span class="event-text">สุขภาพ: ทำงานหนัก + กดดัน — ดูแลการกิน นอน ออกกำลัง</span></div>
+    </div>
+  </div>
+
+  <!-- AUGUST 2569 -->
+  <div class="month-card mixed">
+    <div class="month-header">
+      <span class="month-title">สิงหาคม 2569</span>
+      <span class="month-year">Aug 2026</span>
+    </div>
+    <div class="tags">
+      <span class="tag green">ปัง ✨</span>
+      <span class="tag red">พัง ⚠️</span>
+      <span class="tag gold">เสี่ยงโชค 💰</span>
+    </div>
+    <div class="event"><span class="event-icon">🎨</span><span class="event-text">ความคิดสร้างสรรค์สูง — ศิลปะ/เขียน/ดนตรี</span></div>
+    <div class="event"><span class="event-icon">🧘</span><span class="event-text">ออกบวช/หาความสงบ — ทางเลือกที่ดี</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">โฟกัสตัวเองและเป้าหมาย — อย่ากังวลเรื่องคู่ครอง</span></div>
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">ระวังซุ่มซ่าม — เจ็บตัว/ได้แผล</span></div>
+      <div class="event"><span class="event-icon">💰</span><span class="event-text">เดือนเสี่ยงโชค — ซื้อหวยได้</span></div>
+    </div>
+  </div>
+
+  <!-- SEPTEMBER 2569 -->
+  <div class="month-card mixed">
+    <div class="month-header">
+      <span class="month-title">กันยายน 2569</span>
+      <span class="month-year">Sep 2026</span>
+    </div>
+    <div class="tags">
+      <span class="tag red">พัง ⚠️</span>
+      <span class="tag gold">เสี่ยงโชค 💰</span>
+    </div>
+    <div class="event"><span class="event-icon">👫</span><span class="event-text">แฟน/คู่ครองอาจมีปัญหาให้ช่วยแก้</span></div>
+    <div class="event"><span class="event-icon">🔄</span><span class="event-text">เปลี่ยนตำแหน่ง หรือย้ายที่ทำงาน</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">เปิดใจแสดงความรู้สึก — อย่าเงียบ</span></div>
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">การไม่แสดงออก = คนรอบข้างเข้าใจผิด</span></div>
+      <div class="event"><span class="event-icon">💰</span><span class="event-text">เดือนเสี่ยงโชค — ซื้อหวยได้</span></div>
+    </div>
+  </div>
+
+  <!-- OCTOBER 2569 -->
+  <div class="month-card neutral">
+    <div class="month-header">
+      <span class="month-title">ตุลาคม 2569</span>
+      <span class="month-year">Oct 2026</span>
+    </div>
+    <div class="tags">
+      <span class="tag pink">รัก ❤️</span>
+    </div>
+    <div class="event"><span class="event-icon">💬</span><span class="event-text">ดูแลคนรัก — พูดคุยบ่อยๆ ปรับความเข้าใจ</span></div>
+  </div>
+
+  <!-- NOVEMBER 2569 -->
+  <div class="month-card mixed">
+    <div class="month-header">
+      <span class="month-title">พฤศจิกายน 2569</span>
+      <span class="month-year">Nov 2026</span>
+    </div>
+    <div class="tags">
+      <span class="tag red">พัง ⚠️</span>
+      <span class="tag gold">เสี่ยงโชค 💰</span>
+      <span class="tag teal">อิสระ 🕊️</span>
+    </div>
+    <div class="event"><span class="event-icon">⚠️</span><span class="event-text">ปัญหากับผู้ใหญ่ / ทำงานทางไกลระวังเรื่องเดือดร้อน</span></div>
+    <div class="event"><span class="event-icon">🏥</span><span class="event-text">เสี่ยงเกิดแผล/ผ่าตัด — มีสติทุกกิจกรรม</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">💡</span><span class="event-text">ลองทำสิ่งใหม่ — ความสุขในแบบตัวเอง</span></div>
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">อย่าให้ความคิดว่าต้องมีคู่ ฉุดรั้งความสุข</span></div>
+      <div class="event"><span class="event-icon">💰</span><span class="event-text">เดือนเสี่ยงโชค — ซื้อหวยได้</span></div>
+    </div>
+  </div>
+
+  <!-- DECEMBER 2569 -->
+  <div class="month-card mixed">
+    <div class="month-header">
+      <span class="month-title">ธันวาคม 2569</span>
+      <span class="month-year">Dec 2026</span>
+    </div>
+    <div class="tags">
+      <span class="tag green">ปัง ✨</span>
+      <span class="tag red">พัง ⚠️</span>
+      <span class="tag gold">เสี่ยงโชค 💰</span>
+      <span class="tag blue">เดินทาง ✈️</span>
+    </div>
+    <div class="event"><span class="event-icon">✈️</span><span class="event-text">ใช้ความสามารถ + เดินทางต่อยอดงาน โดยเฉพาะต่างประเทศ</span></div>
+    <div class="event"><span class="event-icon">💞</span><span class="event-text">ใส่ใจความสัมพันธ์ที่จริงใจ — อย่าเหงา</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">มีสติเตรียมพร้อม — โอกาสดีกำลังมา ระวังจัดการลูกน้อง</span></div>
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">ห้ามให้ใครยืมเงิน</span></div>
+      <div class="event"><span class="event-icon">🏥</span><span class="event-text">เครียดเรื่องงาน+เงิน — จัดระบบชีวิต หาเวลาพัก</span></div>
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">ระวังอุบัติเหตุ/ของมีคม — ศัลยกรรมเลือกที่เชื่อถือได้</span></div>
+      <div class="event"><span class="event-icon">💰</span><span class="event-text">เดือนเสี่ยงโชค — ซื้อหวยได้</span></div>
+    </div>
+  </div>
+
+  <!-- JANUARY 2570 -->
+  <div class="month-card good">
+    <div class="month-header">
+      <span class="month-title">มกราคม 2570</span>
+      <span class="month-year">Jan 2027</span>
+    </div>
+    <div class="tags">
+      <span class="tag green">ปัง ✨</span>
+    </div>
+    <div class="event"><span class="event-icon">🚀</span><span class="event-text">ลงมือทำโปรเจกต์ที่วางแผนไว้ — ดวงหนุนสำเร็จ</span></div>
+    <div class="event"><span class="event-icon">🤝</span><span class="event-text">ใช้เสน่ห์สร้างคอนเนคชั่น — โอกาสใหม่</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">ระวังบริหารทีมงาน — อย่าให้เพื่อนยืมเงิน</span></div>
+    </div>
+  </div>
+
+  <!-- FEBRUARY 2570 -->
+  <div class="month-card mixed">
+    <div class="month-header">
+      <span class="month-title">กุมภาพันธ์ 2570</span>
+      <span class="month-year">Feb 2027</span>
+    </div>
+    <div class="tags">
+      <span class="tag green">ปัง ✨</span>
+      <span class="tag red">พัง ⚠️</span>
+    </div>
+    <div class="event"><span class="event-icon">🎨</span><span class="event-text">ปลดปล่อยความคิดสร้างสรรค์ — ศิลปะ/เรียนรู้</span></div>
+    <div class="event"><span class="event-icon">🧘</span><span class="event-text">หาความสงบ — สมาธิ/ธรรมชาติ</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">🏥</span><span class="event-text">เครียดจากธุรกิจ (ครอบครัว+ต่างชาติ) — ดูแลสุขภาพ</span></div>
+      <div class="event"><span class="event-icon">👨‍👩‍👧‍👧</span><span class="event-text">ใช้เวลากับครอบครัว — สื่อสารความห่วงใย</span></div>
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">อย่าปล่อยให้กลัวจนไม่ไปหาหมอ</span></div>
+    </div>
+  </div>
+
+  <!-- MARCH 2570 -->
+  <div class="month-card mixed">
+    <div class="month-header">
+      <span class="month-title">มีนาคม 2570</span>
+      <span class="month-year">Mar 2027</span>
+    </div>
+    <div class="tags">
+      <span class="tag green">ปัง ✨</span>
+      <span class="tag red">พัง ⚠️</span>
+    </div>
+    <div class="event"><span class="event-icon">👑</span><span class="event-text">คบคนมีฐานะ — เสริมฐานะการเงิน</span></div>
+    <div class="event"><span class="event-icon">🤝</span><span class="event-text">ร่วมงานกับคนมีประสบการณ์ — โตในอนาคต</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">ความรัก: กระทบกระทั่งง่าย — พูดคุยกันดีๆ</span></div>
+      <div class="event"><span class="event-icon">💰</span><span class="event-text">วางแผนการเงินจริงจัง — หักค่าใช้จ่ายไม่จำเป็น</span></div>
+      <div class="event"><span class="event-icon">💬</span><span class="event-text">สื่อสารความรู้สึก — อย่าเก็บไว้คนเดียว</span></div>
+      <div class="event"><span class="event-icon">🤗</span><span class="event-text">เปิดรับมิตรภาพใหม่ — ทำให้ชีวิตสมดุล</span></div>
+    </div>
+  </div>
+
+  <!-- APRIL 2570 -->
+  <div class="month-card good">
+    <div class="month-header">
+      <span class="month-title">เมษายน 2570</span>
+      <span class="month-year">Apr 2027</span>
+    </div>
+    <div class="tags">
+      <span class="tag green">ปัง ✨</span>
+      <span class="tag red">พัง ⚠️</span>
+      <span class="tag blue">เปลี่ยนงาน 🔄</span>
+    </div>
+    <div class="event"><span class="event-icon">🧠</span><span class="event-text">วิเคราะห์เก่ง — เรียนรู้ทักษะใหม่ไว</span></div>
+    <div class="event"><span class="event-icon">📚</span><span class="event-text">ถ่ายทอดความรู้ — เป็นครู/ที่ปรึกษา</span></div>
+    <div class="event"><span class="event-icon">🔄</span><span class="event-text">เปลี่ยนตำแหน่ง/สายอาชีพ/ที่ทำงาน</span></div>
+    <div class="event"><span class="event-icon">✈️</span><span class="event-text">เดินทางไกลเพื่อทำงาน</span></div>
+    <div style="margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">เลี่ยงปัญหากับคนรอบข้าง — อย่าใจร้อน</span></div>
+      <div class="event"><span class="event-icon">⚖️</span><span class="event-text">ระวังข้อพิพาท/คดีความ</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Quick Reference Cards -->
+<div style="margin-top:3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem">
+
+  <div style="background:linear-gradient(145deg,#1a1a2e,#16213e);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)">
+    <h3 style="font-size:1rem;margin-bottom:0.75rem;color:#f6d365">⚠️ เรื่องที่ต้องระวังทั้งปี</h3>
+    <div class="event"><span class="event-icon">👨‍👩‍👧‍👧</span><span class="event-text">ครอบครัว: เสี่ยงเรื่องโศกเศร้า — ระวังอันตราย ตรวจสุขภาพ</span></div>
+    <div class="event"><span class="event-icon">💰</span><span class="event-text">การเงินตึงตัว — วางแผนสำรอง ห้ามซื้อของชิ้นใหญ่</span></div>
+    <div class="event"><span class="event-icon">⚖️</span><span class="event-text">ระวังคดีความ — มีสติกับเนื้อกับตัว</span></div>
+    <div class="event"><span class="event-icon">🩹</span><span class="event-text">อุบัติเหตุ/ของมีคม/ผ่าตัด</span></div>
+    <div class="event"><span class="event-icon">💔</span><span class="event-text">รัก: เสี่ยงเลิก — สื่อสารให้ดี</span></div>
+  </div>
+
+  <div style="background:linear-gradient(145deg,#1a1a2e,#16213e);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)">
+    <h3 style="font-size:1rem;margin-bottom:0.75rem;color:#43e97b">✨ สิ่งที่จะปังทั้งปี</h3>
+    <div class="event"><span class="event-icon">🙏</span><span class="event-text">ทำบุญช่วยเหลือผู้อื่น = เสริมดวงแรง</span></div>
+    <div class="event"><span class="event-icon">🧠</span><span class="event-text">เรียนรู้ไว — ถ่ายทอดความรู้ให้คนอื่น</span></div>
+    <div class="event"><span class="event-icon">✈️</span><span class="event-text">เดินทางต่างประเทศ/ไกลบ้าน — เปิดโลกใหม่</span></div>
+    <div class="event"><span class="event-icon">💫</span><span class="event-text">เสน่ห์แรง — คนอยากเข้าใกล้</span></div>
+    <div class="event"><span class="event-icon">🎨</span><span class="event-text">ความคิดสร้างสรรค์นอกกรอบ</span></div>
+  </div>
+
+  <div style="background:linear-gradient(145deg,#1a1a2e,#16213e);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)">
+    <h3 style="font-size:1rem;margin-bottom:0.75rem;color:#f093fb">💖 ความรักรายเดือน</h3>
+    <div class="event"><span class="event-icon">💞</span><span class="event-text"><strong>พ.ค. 69</strong> — เจอความรัก/สัมพันธ์ใหม่</span></div>
+    <div class="event"><span class="event-icon">💞</span><span class="event-text"><strong>มิ.ย. 69</strong> — เจอความรัก/สัมพันธ์ใหม่</span></div>
+    <div class="event" style="margin-top:0.5rem"><span class="event-icon">💬</span><span class="event-text"><strong>ต.ค. 69</strong> — ดูแลคนรักเป็นพิเศษ</span></div>
+    <div class="event"><span class="event-icon">💬</span><span class="event-text"><strong>มี.ค. 70</strong> — ระวังกระทบกระทั่ง — คุยกันดีๆ</span></div>
+    <div class="event" style="margin-top:0.5rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.5rem">
+      <span class="event-icon">👤</span><span class="event-text">คนรัก: มั่นใจสูง มีสไตล์ ภูมิใจในตัวเอง</span>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(145deg,#1a1a2e,#16213e);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)">
+    <h3 style="font-size:1rem;margin-bottom:0.75rem;color:#f6d365">💰 หวยรายเดือน</h3>
+    <div class="event"><span class="event-icon">🎰</span><span class="event-text"><strong>ส.ค. 69</strong> — เดือนเสี่ยงโชค</span></div>
+    <div class="event"><span class="event-icon">🎰</span><span class="event-text"><strong>ก.ย. 69</strong> — เดือนเสี่ยงโชค</span></div>
+    <div class="event"><span class="event-icon">🎰</span><span class="event-text"><strong>พ.ย. 69</strong> — เดือนเสี่ยงโชค</span></div>
+    <div class="event"><span class="event-icon">🎰</span><span class="event-text"><strong>ธ.ค. 69</strong> — เดือนเสี่ยงโชค</span></div>
+    <div style="margin-top:0.5rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.5rem">
+      <div class="event"><span class="event-icon">⚠️</span><span class="event-text">นอกจากนี้ดวงรวมบอกว่า "อย่าเสี่ยงโชค" — เล่นเฉพาะเดือนที่กำหนด</span></div>
+    </div>
+  </div>
+
+  <div style="background:linear-gradient(145deg,#1a1a2e,#16213e);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)">
+    <h3 style="font-size:1rem;margin-bottom:0.75rem;color:#38f9d7">🏥 สุขภาพ/อุบัติเหตุ</h3>
+    <div class="event"><span class="event-icon">🏥</span><span class="event-text"><strong>ก.ค. 69</strong> — ทำงานหนัก กดดัน — ดูแลการกินนอน</span></div>
+    <div class="event"><span class="event-icon">🩹</span><span class="event-text"><strong>ส.ค. 69</strong> — ซุ่มซ่าม เสี่ยงได้แผล</span></div>
+    <div class="event"><span class="event-icon">🩹</span><span class="event-text"><strong>พย. 69</strong> — เสี่ยงผ่าตัด/ของมีคม ⚠️⚠️⚠️</span></div>
+    <div class="event"><span class="event-icon">🩹</span><span class="event-text"><strong>ธ.ค. 69</strong> — เสี่ยงอุบัติเหตุ/แผล</span></div>
+    <div class="event"><span class="event-icon">🏥</span><span class="event-text"><strong>ก.พ. 70</strong> — ครอบครัว+เครียดธุรกิจ</span></div>
+    <div class="event"><span class="event-icon">🏥</span><span class="event-text"><strong>มี.ค. 70</strong> — สุขภาพโดยรวม</span></div>
+  </div>
+
+  <div style="background:linear-gradient(145deg,#1a1a2e,#16213e);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)">
+    <h3 style="font-size:1rem;margin-bottom:0.75rem;color:#8899ff">🎯 แผนการจากดวง</h3>
+    <div class="event"><span class="event-icon">💼</span><span class="event-text">โฟกัสอาชีพธาตุทอง (IT, law, finance, management)</span></div>
+    <div class="event"><span class="event-icon">🌏</span><span class="event-text">ค้าข้ามประเทศ/ต่างชาติ — ดวงหนุน</span></div>
+    <div class="event"><span class="event-icon">👴</span><span class="event-text">สร้างสัมพันธ์กับผู้ใหญ่</span></div>
+    <div class="event"><span class="event-icon">📚</span><span class="event-text">เป็นที่ปรึกษา/สอนคน</span></div>
+    <div class="event"><span class="event-icon">💰</span><span class="event-text">กันเงินสำรอง 6 เดือน — ห้ามลงทุนเสี่ยง</span></div>
+  </div>
+
+</div>
+
+<div class="footer">
+  วิเคราะห์จากคำทำนายซินแส ・ พ.ศ. 2569–2570 ・ เปิดใน browser เพื่อดูแบบเต็ม
+</div>
+
+</div>
+</body>
+</html>
